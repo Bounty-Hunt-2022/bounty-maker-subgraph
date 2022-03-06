@@ -1,0 +1,27 @@
+type BountyMaker @entity {
+  id: ID!
+  bountyCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+type Bounty @entity {
+  id: ID!
+  active: Boolean!
+  rewards: [BigInt!]!
+  uri: String!
+  tokenLimit: BigInt!
+  deadline: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+  winners: [Winners!]! @derivedFrom(field: "bounty")
+}
+type Winners @entity {
+  id: ID!
+  address: Bytes! # address
+  bounty: Bounty!
+  reward: BigInt
+  nftUri: String!
+  claimed: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
