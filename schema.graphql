@@ -13,9 +13,9 @@ type Bounty @entity {
   deadline: BigInt!
   block: BigInt!
   timestamp: BigInt!
-  winners: [Winners!]! @derivedFrom(field: "bounty")
+  winners: [Winner!]! @derivedFrom(field: "bounty")
 }
-type Winners @entity {
+type Winner @entity {
   id: ID!
   address: Bytes! # address
   bounty: Bounty!

@@ -13,7 +13,7 @@ import {
 } from "../generated/BountyMaker/BountyMaker";
 import { getBounty } from "./entities/bounty";
 import { getBountyMaker } from "./entities/bountyMaker";
-import { getWinners } from "./entities/winners";
+import { getWinner } from "./entities/winner";
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -47,7 +47,7 @@ export function handleApproval(event: Approval): void {
   // - contract.symbol(...)
   // - contract.token(...)
   // - contract.tokenURI(...)
-  // - contract.winners(...)
+  // - contract.winner(...)
 }
 
 export function handleApprovalForAll(event: ApprovalForAll): void {}
@@ -79,9 +79,9 @@ export function handleBountyCreated(event: BountyCreated): void {
 export function handleClaim(event: Claim): void {
   let id = event.params._bountyId.toString();
   let bounty = getBounty(id, event.block);
-  let winners = getWinners(id, event.params._receiver, event.block);
-  // winners.reward = winners.reward.plus(event.params._amount);
-  winners.claimed = true;
+  let winner = getWinner(id, event.params._receiver, event.block);
+  // winner.reward = winner.reward.plus(event.params._amount);
+  winner.claimed = true;
   let bountyMakerContract = BountyMaker.bind(event.address);
   const nftUriResult = bountyMakerContract.try_tokenURI(
     event.params._contractIndex
@@ -92,14 +92,14 @@ export function handleClaim(event: Claim): void {
   );
 
   if (!nftUriResult.reverted) {
-    winners.nftUri = nftUriResult.value;
+    winner.nftUri = nftUriResult.value;
   }
   if (!rewardResult.reverted) {
-    winners.reward = rewardResult.value;
+    winner.reward = rewardResult.value;
   }
   bounty.active = false;
   bounty.save();
-  winners.save();
+  winner.save();
 }
 
 export function handleERC20PaymentReleased(event: ERC20PaymentReleased): void {}
@@ -121,20 +121,20 @@ export function handleBountyWinners(call: SetBountyWinnersCall): void {
   let bountyMakerContract = BountyMaker.bind(call.to);
 
   if (bounty.active === true) {
-    const winnersArr = call.inputs._winners;
-    for (let i = 0; i < winnersArr.length; i++) {
-      let winners = getWinners(id, winnersArr[i], call.block);
+    const winnerArr = call.inputs._winners;
+    for (let i = 0; i < winnerArr.length; i++) {
+      let winner = getWinner(id, winnerArr[i], call.block);
       const rewardResult = bountyMakerContract.try_rewards(
         id,
         BigInt.fromI32(i)
       );
       if (!rewardResult.reverted) {
-        winners.reward = rewardResult.value;
+        winner.reward = rewardResult.value;
       }
-      winners.claimed = false;
-      winners.block = call.block.number;
-      winners.timestamp = call.block.timestamp;
-      winners.save();
+      winner.claimed = false;
+      winner.block = call.block.number;
+      winner.timestamp = call.block.timestamp;
+      winner.save();
     }
   }
 }

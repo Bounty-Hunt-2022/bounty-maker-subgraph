@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ jds-23/bunty",
-    "create-local": "graph create --node http://localhost:8020/ jds-23/bunty",
-    "remove-local": "graph remove --node http://localhost:8020/ jds-23/bunty",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 jds-23/bunty"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ jds-23/bounty-maker-v2",
+    "create-local": "graph create --node http://localhost:8020/ jds-23/bounty-maker-v2",
+    "remove-local": "graph remove --node http://localhost:8020/ jds-23/bounty-maker-v2",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 jds-23/bounty-maker-v2"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.26.0",
