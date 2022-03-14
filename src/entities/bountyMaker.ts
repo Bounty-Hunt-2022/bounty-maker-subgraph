@@ -9,6 +9,7 @@ export function getBountyMaker(block: ethereum.Block): BountyMaker{
         bountyMaker.bountyCount=BigInt.zero();
         bountyMaker.block=block.number;
         bountyMaker.timestamp=block.timestamp;
+        bountyMaker.bountyCount=BigInt.fromI32(0);
         bountyMaker.save();
     }
 

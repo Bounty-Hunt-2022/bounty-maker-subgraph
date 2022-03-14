@@ -59,7 +59,10 @@ export function handleBountyCreated(event: BountyCreated): void {
   let bountyMakerContract = BountyMaker.bind(event.address);
 
   const bountyResult = bountyMakerContract.try_bountys(event.params._bountyId);
-
+  const bountyAdmin= bountyMakerContract.try_getBountyAdmin(event.params._bountyId);
+  if (!bountyAdmin.reverted) {
+    bounty.admin = bountyAdmin.value;
+  }
   if (!bountyResult.reverted) {
     bounty.uri = bountyResult.value.value0;
     bounty.tokenLimit = bountyResult.value.value1;
@@ -70,7 +73,7 @@ export function handleBountyCreated(event: BountyCreated): void {
   bounty.block = event.block.number;
   bounty.timestamp = event.block.timestamp;
   bounty.rewards = event.params._rewards;
-  bountyMaker.bountyCount = bountyMaker.bountyCount.plus(BigInt.fromI32(1));
+  bountyMaker.bountyCount = bountyMaker.bountyCount.plus(BigInt.fromString("1"));
   bountyMaker.block = event.block.number;
   bountyMaker.timestamp = event.block.timestamp;
   bounty.save();
@@ -115,26 +118,26 @@ export function handleWinnersDeclared(event: WinnersDeclared): void {
   bounty.save();
 }
 
-export function handleBountyWinners(call: SetBountyWinnersCall): void {
-  let id = call.inputs._bountyId.toString();
-  let bounty = getBounty(id, call.block);
-  let bountyMakerContract = BountyMaker.bind(call.to);
+// export function handleBountyWinners(call: SetBountyWinnersCall): void {
+//   let id = call.inputs._bountyId.toString();
+//   let bounty = getBounty(id, call.block);
+//   let bountyMakerContract = BountyMaker.bind(call.to);
 
-  if (bounty.active === true) {
-    const winnerArr = call.inputs._winners;
-    for (let i = 0; i < winnerArr.length; i++) {
-      let winner = getWinner(id, winnerArr[i], call.block);
-      const rewardResult = bountyMakerContract.try_rewards(
-        id,
-        BigInt.fromI32(i)
-      );
-      if (!rewardResult.reverted) {
-        winner.reward = rewardResult.value;
-      }
-      winner.claimed = false;
-      winner.block = call.block.number;
-      winner.timestamp = call.block.timestamp;
-      winner.save();
-    }
-  }
-}
+//   if (bounty.active === true) {
+//     const winnerArr = call.inputs._winners;
+//     for (let i = 0; i < winnerArr.length; i++) {
+//       let winner = getWinner(id, winnerArr[i], call.block);
+//       const rewardResult = bountyMakerContract.try_rewards(
+//         id,
+//         BigInt.fromI32(i)
+//       );
+//       if (!rewardResult.reverted) {
+//         winner.reward = rewardResult.value;
+//       }
+//       winner.claimed = false;
+//       winner.block = call.block.number;
+//       winner.timestamp = call.block.timestamp;
+//       winner.save();
+//     }
+//   }
+// }

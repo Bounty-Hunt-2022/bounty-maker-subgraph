@@ -9,6 +9,7 @@ type Bounty @entity {
   active: Boolean!
   rewards: [BigInt!]!
   uri: String!
+  admin: Bytes! # address
   tokenLimit: BigInt!
   deadline: BigInt!
   block: BigInt!
