@@ -13,6 +13,7 @@ import {
 } from "../generated/BountyMaker/BountyMaker";
 import { getBounty } from "./entities/bounty";
 import { getBountyMaker } from "./entities/bountyMaker";
+import { getHunter } from "./entities/hunter";
 import { getWinner } from "./entities/winner";
 
 export function handleApproval(event: Approval): void {
@@ -76,6 +77,7 @@ export function handleBountyCreated(event: BountyCreated): void {
   bountyMaker.bountyCount = bountyMaker.bountyCount.plus(BigInt.fromString("1"));
   bountyMaker.block = event.block.number;
   bountyMaker.timestamp = event.block.timestamp;
+  bountyMaker.save();
   bounty.save();
 }
 
@@ -83,6 +85,7 @@ export function handleClaim(event: Claim): void {
   let id = event.params._bountyId.toString();
   let bounty = getBounty(id, event.block);
   let winner = getWinner(id, event.params._receiver, event.block);
+  let hunter = getHunter(event.params._receiver, event.block);
   // winner.reward = winner.reward.plus(event.params._amount);
   winner.claimed = true;
   let bountyMakerContract = BountyMaker.bind(event.address);
@@ -99,8 +102,17 @@ export function handleClaim(event: Claim): void {
   }
   if (!rewardResult.reverted) {
     winner.reward = rewardResult.value;
+    hunter.rewardClaimed = hunter.rewardClaimed.plus(rewardResult.value);
   }
   bounty.active = false;
+  hunter.winClaimed = hunter.winClaimed.plus(BigInt.fromString("1"));
+  hunter.block = event.block.number;
+  hunter.timestamp = event.block.timestamp;
+  winner.block= event.block.number;
+  winner.timestamp = event.block.timestamp;
+  bounty.block = event.block.number;
+  bounty.timestamp = event.block.timestamp;
+  hunter.save();
   bounty.save();
   winner.save();
 }
@@ -114,6 +126,33 @@ export function handleTransfer(event: Transfer): void {}
 export function handleWinnersDeclared(event: WinnersDeclared): void {
   let id = event.params._bountyId.toString();
   let bounty = getBounty(id, event.block);
+  let bountyMakerContract = BountyMaker.bind(event.address);
+
+  let winners=event.params._winners
+
+  for(let i=0;i<winners.length;i++){
+        let winner = getWinner(id, winners[i], event.block);
+        let hunter=getHunter(winners[i], event.block);
+
+      const rewardResult = bountyMakerContract.try_rewards(
+        id,
+        BigInt.fromI32(i)
+      );
+      if (!rewardResult.reverted) {
+        winner.reward = rewardResult.value;
+        hunter.rewardWon = hunter.rewardWon.plus(rewardResult.value);
+      }        
+        winner.claimed = false;
+        winner.block = event.block.number;
+        winner.timestamp = event.block.timestamp;
+        hunter.winCount=hunter.winCount.plus(BigInt.fromString("1"));
+        hunter.block = event.block.number;
+        hunter.timestamp = event.block.timestamp;
+        winner.save();
+        hunter.save();
+  }
+
+
   bounty.active = false;
   bounty.save();
 }

@@ -6,9 +6,9 @@ dataSources:
     name: BountyMaker
     network: mumbai
     source:
-      address: "0xF96fCdc3361214b9e906B0d097b0C2dDa1085768"
+      address: "0x32e49bA474897f1270Ee9ee45EA9C4ED6a8D3023"
       abi: BountyMaker
-      startBlock: 25485694
+      startBlock: 25512969
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -24,6 +24,7 @@ dataSources:
         - BountyMaker
         - Bounty
         - Winner
+        - Hunter
       abis:
         - name: BountyMaker
           file: ./abis/BountyMaker.json
@@ -42,7 +43,7 @@ dataSources:
           handler: handleOwnershipTransferred
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-        - event: WinnersDeclared(string)
+        - event: WinnersDeclared(string,address[])
           handler: handleWinnersDeclared
       # callHandlers:
       #   - function: setBountyWinners(string,address[])

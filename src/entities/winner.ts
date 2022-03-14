@@ -1,21 +1,21 @@
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Winner } from "../../generated/schema";
+import { Win } from "../../generated/schema";
 
 export function getWinner(
   bountyId: string,
   address: Address,
   block: ethereum.Block
-): Winner {
-  let winner = Winner.load(`${bountyId}-${address.toHex()}`);
+): Win {
+  let winner = Win.load(`${bountyId}-${address.toHex()}`);
 
   if (winner === null) {
-    winner = new Winner(`${bountyId}-${address.toHex()}`);
+    winner = new Win(`${bountyId}-${address.toHex()}`);
     if (address == Address.zero()) {
       winner.block = block.number;
       winner.timestamp = block.timestamp;
       winner.save();
     } else {
-      winner.address = address;
+      winner.hunter = address.toHexString();
       winner.bounty = bountyId;
       winner.reward = BigInt.zero();
       winner.nftUri = "";
@@ -26,5 +26,5 @@ export function getWinner(
     }
   }
 
-  return winner as Winner;
+  return winner as Win;
 }

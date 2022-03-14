@@ -14,15 +14,25 @@ type Bounty @entity {
   deadline: BigInt!
   block: BigInt!
   timestamp: BigInt!
-  winners: [Winner!]! @derivedFrom(field: "bounty")
+  winners: [Win!]! @derivedFrom(field: "bounty")
 }
-type Winner @entity {
+type Win @entity {
   id: ID!
-  address: Bytes! # address
+  hunter: Hunter!
   bounty: Bounty!
   reward: BigInt
   nftUri: String!
   claimed: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
+type Hunter @entity {
+  id: ID!
+  wins: [Win!]! @derivedFrom(field: "hunter")
+  rewardWon: BigInt!
+  winCount: BigInt!
+  rewardClaimed: BigInt!
+  winClaimed: BigInt!
   block: BigInt!
   timestamp: BigInt!
 }
