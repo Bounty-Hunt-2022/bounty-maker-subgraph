@@ -6,9 +6,9 @@ dataSources:
     name: BountyMaker
     network: mumbai
     source:
-      address: "0x0418dFcE00faDE89CAbD7B5C970642f026888E48"
+      address: "0x0EAFa91212c277014BC446EcB872CA4cecD88663"
       abi: BountyMaker
-      startBlock: 25576016
+      startBlock: 25782011
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

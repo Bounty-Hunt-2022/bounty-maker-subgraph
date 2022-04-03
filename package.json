@@ -5,6 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ jds-23/bounty-maker",
+    "deploy:test": "graph deploy --node https://api.thegraph.com/deploy/ jds-23/another-just",
     "create-local": "graph create --node http://localhost:8020/ jds-23/bounty-maker",
     "remove-local": "graph remove --node http://localhost:8020/ jds-23/bounty-maker",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 jds-23/bounty-maker"
